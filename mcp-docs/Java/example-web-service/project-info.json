@@ -1,0 +1,146 @@
+{
+  "project_metadata": {
+    "name": "example-web-service",
+    "version": "1.0.0",
+    "language": "java",
+    "created_date": "2025-01-01",
+    "last_updated": "2025-01-01",
+    "description": "基于Spring Boot的RESTful Web服务示例项目",
+    "repository": "https://github.com/example/example-web-service",
+    "maintainers": [
+      {
+        "name": "项目负责人",
+        "email": "maintainer@example.com",
+        "role": "lead_developer"
+      }
+    ]
+  },
+  "technology_stack": {
+    "language": "Java 17",
+    "framework": "Spring Boot 3.1.0",
+    "database": "MySQL 8.0",
+    "dependencies": [
+      {
+        "name": "spring-boot-starter-web",
+        "version": "3.1.0",
+        "purpose": "Web层框架支持"
+      },
+      {
+        "name": "spring-boot-starter-data-jpa",
+        "version": "3.1.0",
+        "purpose": "JPA数据访问层"
+      },
+      {
+        "name": "mysql-connector-java",
+        "version": "8.0.33",
+        "purpose": "MySQL数据库连接"
+      }
+    ],
+    "dev_dependencies": [
+      {
+        "name": "spring-boot-starter-test",
+        "version": "3.1.0",
+        "purpose": "测试框架支持"
+      },
+      {
+        "name": "h2",
+        "version": "2.1.214",
+        "purpose": "内存数据库测试"
+      }
+    ]
+  },
+  "architecture": {
+    "pattern": "三层架构模式",
+    "layers": [
+      {
+        "name": "控制器层",
+        "description": "处理HTTP请求和响应",
+        "components": ["UserController", "AuthController"]
+      },
+      {
+        "name": "服务层",
+        "description": "核心业务逻辑处理",
+        "components": ["UserService", "AuthService"]
+      },
+      {
+        "name": "数据访问层",
+        "description": "数据持久化操作",
+        "components": ["UserRepository", "RoleRepository"]
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "user-management",
+      "path": "./user-management",
+      "description": "用户信息管理，包括注册、登录、信息维护",
+      "status": "active",
+      "dependencies": ["authentication", "data-access"]
+    },
+    {
+      "name": "authentication",
+      "path": "./authentication",
+      "description": "JWT token认证和权限管理",
+      "status": "active",
+      "dependencies": ["data-access"]
+    },
+    {
+      "name": "data-access",
+      "path": "./data-access",
+      "description": "数据库操作封装和缓存管理",
+      "status": "active",
+      "dependencies": []
+    }
+  ],
+  "development_standards": {
+    "coding_style": "Google Java Style Guide",
+    "log_language": "english",
+    "comment_language": "chinese",
+    "min_log_level": "info",
+    "test_coverage_target": "85%",
+    "documentation_coverage": "90%"
+  },
+  "deployment": {
+    "environments": [
+      {
+        "name": "development",
+        "description": "本地开发环境",
+        "requirements": ["JDK 17", "Maven 3.8+", "MySQL 8.0"]
+      },
+      {
+        "name": "production",
+        "description": "生产环境部署",
+        "requirements": ["Java 17 Runtime", "MySQL 8.0", "最小内存512MB"]
+      }
+    ]
+  },
+  "ai_context": {
+    "primary_use_cases": ["RESTful API开发", "用户管理系统", "JWT认证"],
+    "key_concepts": ["Spring Boot", "JPA", "RESTful架构", "JWT Token"],
+    "common_patterns": ["Controller-Service-Repository", "DTO模式", "异常统一处理"],
+    "performance_considerations": ["数据库连接池", "缓存策略", "分页查询"],
+    "security_requirements": ["JWT认证", "输入参数验证", "SQL注入防护"]
+  },
+  "status": {
+    "phase": "development",
+    "completion_percentage": "75%",
+    "next_milestones": [
+      {
+        "milestone": "权限管理模块",
+        "target_date": "2025-02-01",
+        "description": "实现基于角色的权限控制"
+      },
+      {
+        "milestone": "API文档完善",
+        "target_date": "2025-01-15",
+        "description": "完成所有模块的API文档编写"
+      }
+    ]
+  },
+  "mcp_metadata": {
+    "generated_by": "MCP文档服务器",
+    "schema_version": "1.0.0",
+    "last_ai_update": "2025-01-01T00:00:00Z",
+    "auto_update_enabled": true
+  }
+}

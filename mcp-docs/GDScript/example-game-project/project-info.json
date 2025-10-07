@@ -1,0 +1,158 @@
+{
+  "project_metadata": {
+    "name": "example-game-project",
+    "version": "0.3.0",
+    "language": "gdscript",
+    "created_date": "2024-12-01",
+    "last_updated": "2025-01-01",
+    "description": "基于Godot引擎的2D游戏示例项目",
+    "repository": "https://github.com/example/example-game-project",
+    "maintainers": [
+      {
+        "name": "游戏开发者",
+        "email": "gamedev@example.com",
+        "role": "lead_developer"
+      }
+    ]
+  },
+  "technology_stack": {
+    "language": "GDScript",
+    "framework": "Godot Engine 4.1",
+    "database": "SQLite (存档数据)",
+    "dependencies": [
+      {
+        "name": "godot-gut",
+        "version": "9.2.0",
+        "purpose": "单元测试框架"
+      }
+    ],
+    "dev_dependencies": [
+      {
+        "name": "godot-debug-tools",
+        "version": "1.0.0",
+        "purpose": "调试和性能分析工具"
+      }
+    ]
+  },
+  "architecture": {
+    "pattern": "基于场景的游戏架构",
+    "layers": [
+      {
+        "name": "场景层",
+        "description": "游戏场景和关卡管理",
+        "components": ["MainScene", "GameScene", "MenuScene"]
+      },
+      {
+        "name": "系统层",
+        "description": "游戏核心系统",
+        "components": ["SceneManager", "GameStateManager", "InputHandler"]
+      },
+      {
+        "name": "组件层",
+        "description": "可重用的游戏组件",
+        "components": ["PlayerController", "EnemyAI", "UIManager"]
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "player-controller",
+      "path": "./player-controller",
+      "description": "玩家角色控制系统，处理移动、攻击等操作",
+      "status": "active",
+      "dependencies": ["ui-manager"]
+    },
+    {
+      "name": "enemy-ai",
+      "path": "./enemy-ai",
+      "description": "敌人AI行为系统，包括巡逻、追击、攻击逻辑",
+      "status": "active",
+      "dependencies": ["player-controller"]
+    },
+    {
+      "name": "ui-manager",
+      "path": "./ui-manager",
+      "description": "用户界面管理系统，处理菜单和HUD显示",
+      "status": "active",
+      "dependencies": ["save-system"]
+    },
+    {
+      "name": "save-system",
+      "path": "./save-system",
+      "description": "游戏存档系统，管理游戏数据的保存和读取",
+      "status": "active",
+      "dependencies": []
+    }
+  ],
+  "development_standards": {
+    "coding_style": "GDScript Style Guide",
+    "log_language": "english",
+    "comment_language": "chinese",
+    "min_log_level": "info",
+    "test_coverage_target": "70%",
+    "documentation_coverage": "85%"
+  },
+  "deployment": {
+    "environments": [
+      {
+        "name": "development",
+        "description": "本地开发环境",
+        "requirements": ["Godot Engine 4.1+", "最小内存4GB"]
+      },
+      {
+        "name": "production",
+        "description": "发布版本",
+        "requirements": ["目标平台运行环境", "合适的性能配置"]
+      }
+    ]
+  },
+  "ai_context": {
+    "primary_use_cases": ["2D游戏开发", "角色控制系统", "AI行为系统", "UI界面管理"],
+    "key_concepts": ["Godot场景系统", "信号机制", "状态机", "物理引擎", "资源管理"],
+    "common_patterns": ["信号-槽模式", "状态机模式", "观察者模式", "单例模式"],
+    "performance_considerations": ["对象池", "信号连接管理", "纹理压缩", "音频优化"],
+    "security_requirements": ["存档数据验证", "输入验证", "资源访问控制"]
+  },
+  "platform_targets": [
+    {
+      "platform": "Windows",
+      "version": "10+",
+      "architecture": ["x86_64"],
+      "special_requirements": []
+    },
+    {
+      "platform": "Linux",
+      "version": "Ubuntu 20.04+",
+      "architecture": ["x86_64"],
+      "special_requirements": []
+    },
+    {
+      "platform": "Android",
+      "version": "API 21+",
+      "architecture": ["arm64-v8a", "armeabi-v7a"],
+      "special_requirements": ["OpenGL ES 3.0"]
+    }
+  ],
+  "status": {
+    "phase": "development",
+    "completion_percentage": "40%",
+    "next_milestones": [
+      {
+        "milestone": "技能系统实现",
+        "target_date": "2025-02-15",
+        "description": "实现玩家技能升级和技能树系统"
+      },
+      {
+        "milestone": "多人功能",
+        "target_date": "2025-04-01",
+        "description": "添加在线多人对战功能"
+      }
+    ]
+  },
+  "mcp_metadata": {
+    "generated_by": "MCP文档服务器",
+    "schema_version": "1.0.0",
+    "last_ai_update": "2025-01-01T00:00:00Z",
+    "auto_update_enabled": true
+  }
+}

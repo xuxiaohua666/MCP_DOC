@@ -1,0 +1,102 @@
+{
+  "project_metadata": {
+    "name": "{project_name}",
+    "version": "{version}",
+    "language": "{language}",
+    "created_date": "{created_date}",
+    "last_updated": "{last_updated}",
+    "description": "{project_description}",
+    "repository": "{repository_url}",
+    "maintainers": [
+      {
+        "name": "{maintainer_name}",
+        "email": "{maintainer_email}",
+        "role": "lead_developer"
+      }
+    ]
+  },
+  "technology_stack": {
+    "language": "{programming_language}",
+    "framework": "{main_framework}",
+    "database": "{database_system}",
+    "dependencies": [
+      {
+        "name": "{dependency_name}",
+        "version": "{dependency_version}",
+        "purpose": "{dependency_purpose}"
+      }
+    ],
+    "dev_dependencies": [
+      {
+        "name": "{dev_dependency_name}",
+        "version": "{dev_dependency_version}",
+        "purpose": "{dev_dependency_purpose}"
+      }
+    ]
+  },
+  "architecture": {
+    "pattern": "{architecture_pattern}",
+    "layers": [
+      {
+        "name": "{layer_name}",
+        "description": "{layer_description}",
+        "components": ["{component1}", "{component2}"]
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "{module_name}",
+      "path": "{module_path}",
+      "description": "{module_description}",
+      "status": "active|deprecated|planned",
+      "dependencies": ["{dependency_module1}", "{dependency_module2}"]
+    }
+  ],
+  "development_standards": {
+    "coding_style": "{coding_style_guide}",
+    "log_language": "english",
+    "comment_language": "chinese",
+    "min_log_level": "info",
+    "test_coverage_target": "{coverage_percentage}",
+    "documentation_coverage": "{doc_coverage_percentage}"
+  },
+  "deployment": {
+    "environments": [
+      {
+        "name": "development",
+        "description": "{dev_env_description}",
+        "requirements": ["{requirement1}", "{requirement2}"]
+      },
+      {
+        "name": "production",
+        "description": "{prod_env_description}",
+        "requirements": ["{requirement1}", "{requirement2}"]
+      }
+    ]
+  },
+  "ai_context": {
+    "primary_use_cases": ["{use_case1}", "{use_case2}"],
+    "key_concepts": ["{concept1}", "{concept2}"],
+    "common_patterns": ["{pattern1}", "{pattern2}"],
+    "performance_considerations": ["{consideration1}", "{consideration2}"],
+    "security_requirements": ["{security_req1}", "{security_req2}"]
+  },
+  "status": {
+    "phase": "planning|development|testing|production|maintenance",
+    "completion_percentage": "{completion_percentage}",
+    "next_milestones": [
+      {
+        "milestone": "{milestone_name}",
+        "target_date": "{target_date}",
+        "description": "{milestone_description}"
+      }
+    ]
+  },
+  "mcp_metadata": {
+    "generated_by": "MCP文档服务器",
+    "schema_version": "1.0.0",
+    "last_ai_update": "{last_ai_update}",
+    "auto_update_enabled": true
+  }
+}

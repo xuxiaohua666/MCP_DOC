@@ -1,0 +1,59 @@
+{
+  "mcp_version": "1.0.0",
+  "server_name": "MCP文档服务器",
+  "description": "AI辅助开发文档管理系统",
+  "supported_languages": [
+    {
+      "name": "java",
+      "display_name": "Java",
+      "description": "企业级应用开发",
+      "file_extensions": [".java"],
+      "template_suffix": "java",
+      "logging_framework": "slf4j",
+      "test_framework": "junit"
+    },
+    {
+      "name": "gdscript",
+      "display_name": "GDScript", 
+      "description": "Godot游戏引擎脚本开发",
+      "file_extensions": [".gd"],
+      "template_suffix": "gdscript",
+      "logging_framework": "godot_logger",
+      "test_framework": "gut"
+    }
+  ],
+  "document_types": {
+    "project": {
+      "required_files": ["README.md", "project-info.json"],
+      "optional_files": ["CHANGELOG.md", "LICENSE"]
+    },
+    "module": {
+      "required_files": ["README.md", "metadata.json"],
+      "optional_files": ["api.md", "implementation.md", "tests.md"]
+    }
+  },
+  "ai_integration": {
+    "auto_update": true,
+    "update_triggers": [
+      "code_change",
+      "structure_change", 
+      "dependency_change"
+    ],
+    "context_windows": {
+      "project_context": 4000,
+      "module_context": 2000,
+      "api_context": 1000
+    }
+  },
+  "coding_standards": {
+    "log_language": "english",
+    "comment_language": "chinese",
+    "min_log_level": "info",
+    "documentation_format": "markdown"
+  },
+  "version_control": {
+    "track_changes": true,
+    "auto_commit": false,
+    "commit_message_template": "docs: update {document_type} documentation for {module_name}"
+  }
+}

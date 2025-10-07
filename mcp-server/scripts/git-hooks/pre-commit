@@ -1,0 +1,53 @@
+#!/bin/sh
+# MCP文档服务器Git预提交钩子
+# 自动更新文档时间戳并验证文档质量
+
+set -e
+
+# 获取脚本所在目录
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+MCP_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
+
+# 日志函数
+log() {
+    echo "[MCP Pre-commit] $1"
+}
+
+log "Starting MCP documentation pre-commit checks..."
+
+# 检查Python是否可用
+if ! command -v python3 >/dev/null 2>&1; then
+    log "ERROR: python3 not found. Please install Python 3."
+    exit 1
+fi
+
+# 获取修改的文档文件
+CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(md|json)$' | head -20)
+
+if [ -z "$CHANGED_FILES" ]; then
+    log "No documentation files changed, skipping MCP checks."
+    exit 0
+fi
+
+log "Found modified documentation files:"
+echo "$CHANGED_FILES" | sed 's/^/  /'
+
+# 运行文档质量检查
+log "Running documentation quality check..."
+if python3 "$MCP_ROOT/scripts/quality-checker.py" --mcp-root "$MCP_ROOT" --output "/tmp/mcp-quality-report.json" >/dev/null 2>&1; then
+    log "✅ Documentation quality check passed"
+else
+    log "❌ Documentation quality check failed"
+    log "Run 'python3 scripts/quality-checker.py --verbose' for details"
+    exit 1
+fi
+
+# 更新文档时间戳
+log "Updating documentation timestamps..."
+python3 "$MCP_ROOT/scripts/update-timestamps.py" --mcp-root "$MCP_ROOT" --git-staged
+
+# 自动添加更新的时间戳文件到暂存区
+git add $(echo "$CHANGED_FILES" | grep '\.json$' | head -10)
+
+log "✅ Pre-commit checks completed successfully"
+exit 0

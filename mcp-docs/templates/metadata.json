@@ -1,0 +1,182 @@
+{
+  "module_metadata": {
+    "name": "{module_name}",
+    "version": "{module_version}",
+    "parent_project": "{project_name}",
+    "created_date": "{created_date}",
+    "last_updated": "{last_updated}",
+    "description": "{module_description}",
+    "category": "{module_category}",
+    "priority": "high|medium|low",
+    "status": "active|deprecated|planned|under_development"
+  },
+  "functionality": {
+    "primary_purpose": "{primary_purpose}",
+    "key_features": [
+      {
+        "feature": "{feature_name}",
+        "description": "{feature_description}",
+        "status": "implemented|planned|deprecated"
+      }
+    ],
+    "use_cases": [
+      {
+        "use_case": "{use_case_name}",
+        "description": "{use_case_description}",
+        "frequency": "high|medium|low"
+      }
+    ]
+  },
+  "technical_details": {
+    "main_classes": [
+      {
+        "class_name": "{class_name}",
+        "file_path": "{file_path}",
+        "description": "{class_description}",
+        "public_methods": [
+          {
+            "method_name": "{method_name}",
+            "description": "{method_description}",
+            "parameters": [
+              {
+                "name": "{param_name}",
+                "type": "{param_type}",
+                "description": "{param_description}"
+              }
+            ],
+            "return_type": "{return_type}",
+            "exceptions": ["{exception1}", "{exception2}"]
+          }
+        ]
+      }
+    ],
+    "dependencies": {
+      "internal": [
+        {
+          "module": "{internal_module}",
+          "reason": "{dependency_reason}",
+          "type": "strong|weak"
+        }
+      ],
+      "external": [
+        {
+          "library": "{external_library}",
+          "version": "{library_version}",
+          "purpose": "{library_purpose}"
+        }
+      ]
+    }
+  },
+  "configuration": {
+    "config_files": [
+      {
+        "file_name": "{config_file}",
+        "path": "{config_path}",
+        "format": "json|yaml|properties",
+        "description": "{config_description}"
+      }
+    ],
+    "environment_variables": [
+      {
+        "name": "{env_var_name}",
+        "description": "{env_var_description}",
+        "default_value": "{default_value}",
+        "required": true
+      }
+    ]
+  },
+  "api_endpoints": [
+    {
+      "path": "{endpoint_path}",
+      "method": "{http_method}",
+      "description": "{endpoint_description}",
+      "request_format": "{request_format}",
+      "response_format": "{response_format}",
+      "authentication": "required|optional|none"
+    }
+  ],
+  "performance": {
+    "benchmarks": [
+      {
+        "operation": "{operation_name}",
+        "average_time": "{avg_time}ms",
+        "memory_usage": "{memory}MB",
+        "last_measured": "{measurement_date}"
+      }
+    ],
+    "scalability": {
+      "max_concurrent_users": "{max_users}",
+      "max_requests_per_second": "{max_rps}",
+      "bottlenecks": ["{bottleneck1}", "{bottleneck2}"]
+    }
+  },
+  "testing": {
+    "test_files": [
+      {
+        "file_name": "{test_file}",
+        "path": "{test_path}",
+        "test_type": "unit|integration|end_to_end",
+        "coverage_percentage": "{coverage}"
+      }
+    ],
+    "test_scenarios": [
+      {
+        "scenario": "{test_scenario}",
+        "description": "{scenario_description}",
+        "expected_result": "{expected_result}"
+      }
+    ]
+  },
+  "logging": {
+    "log_levels_used": ["info", "warn", "error"],
+    "log_format": "{log_format}",
+    "key_log_events": [
+      {
+        "event": "{log_event}",
+        "level": "info|warn|error",
+        "message_template": "{log_message_template}"
+      }
+    ]
+  },
+  "ai_context": {
+    "complexity_level": "low|medium|high",
+    "common_modifications": [
+      {
+        "type": "{modification_type}",
+        "description": "{modification_description}",
+        "frequency": "common|occasional|rare"
+      }
+    ],
+    "integration_patterns": [
+      {
+        "pattern": "{integration_pattern}",
+        "description": "{pattern_description}",
+        "when_to_use": "{usage_scenario}"
+      }
+    ],
+    "best_practices": [
+      {
+        "practice": "{best_practice}",
+        "description": "{practice_description}",
+        "importance": "critical|important|recommended"
+      }
+    ]
+  },
+  "change_history": [
+    {
+      "version": "{change_version}",
+      "date": "{change_date}",
+      "type": "feature|bugfix|refactor|documentation",
+      "description": "{change_description}",
+      "impact": "major|minor|patch"
+    }
+  ],
+  "mcp_metadata": {
+    "generated_by": "MCP文档服务器",
+    "schema_version": "1.0.0",
+    "last_ai_update": "{last_ai_update}",
+    "auto_update_enabled": true,
+    "ai_confidence_score": "{confidence_score}",
+    "manual_review_required": false
+  }
+}
