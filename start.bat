@@ -55,16 +55,32 @@ if %errorlevel% neq 0 (
 )
 echo.
 
-echo 正在启动MCP协议服务器...
-echo 🤖 在支持MCP的工具中配置以下命令即可连接：
-echo     Command : %PYTHON_CMD%
-echo     Args    : start.py --skip-checks
-echo 📂 工作目录: %CD%
-echo.
-echo 💡 提示：服务将在当前窗口运行，按 Ctrl+C 可停止。
+if /I "%1"=="stdio" goto run_stdio
+
+set "HOST_ARG=%1"
+set "PORT_ARG=%2"
+if not defined HOST_ARG set "HOST_ARG=0.0.0.0"
+if not defined PORT_ARG set "PORT_ARG=7778"
+
+echo 正在启动HTTP MCP网关服务器...
 echo.
 
-%PYTHON_CMD% start.py --skip-checks
+%PYTHON_CMD% start.py --mode http --host %HOST_ARG% --port %PORT_ARG% --skip-checks
+goto done
+
+:run_stdio
+echo 正在启动MCP协议服务器 (STDIO 模式)...
+echo 🤖 客户端配置示例：
+echo     Command : %PYTHON_CMD%
+echo     Args    : start.py --mode mcp --skip-checks
+echo     Workdir : %CD%
+echo ⚠️  配置完成后，此窗口可关闭；客户端会自行管理进程。
+echo 💡 若要共享给其他设备，请改用 http 模式：start.bat [host] [port]
+echo.
+
+%PYTHON_CMD% start.py --mode mcp --skip-checks
+
+:done
 
 echo.
 echo 服务器已停止

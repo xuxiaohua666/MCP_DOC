@@ -45,15 +45,25 @@ fi
 echo ""
 
 # 启动服务器
-echo "正在启动MCP协议服务器..."
-echo "🤖 在支持MCP的工具中配置以下命令即可连接："
+if [ "$1" != "stdio" ]; then
+    HOST_ARG=${1:-0.0.0.0}
+    PORT_ARG=${2:-7778}
+    echo "正在启动HTTP MCP网关服务器..."
+    echo ""
+    trap 'echo ""; echo "服务器已停止"; read -p "按回车键退出..."' INT
+    $PYTHON_CMD start.py --mode http --host "$HOST_ARG" --port "$PORT_ARG" --skip-checks
+    exit 0
+fi
+
+echo "正在启动MCP协议服务器 (STDIO 模式)..."
+echo "🤖 客户端配置示例："
 echo "    Command : $PYTHON_CMD"
-echo "    Args    : start.py --skip-checks"
+echo "    Args    : start.py --mode mcp --skip-checks"
 echo "    Workdir : $(pwd)"
-echo ""
-echo "💡 提示：保持窗口开启以维持连接，按 Ctrl+C 可停止服务器"
+echo "⚠️  配置完成后，此窗口可关闭；客户端会自行管理进程。"
+echo "💡 若需共享给其他设备，请改用 http 模式：./start.sh [host] [port]"
 echo ""
 
 trap 'echo ""; echo "服务器已停止"; read -p "按回车键退出..."' INT
 
-$PYTHON_CMD start.py --skip-checks
+$PYTHON_CMD start.py --mode mcp --skip-checks

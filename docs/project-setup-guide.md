@@ -46,7 +46,7 @@ mcp-docs/
    - 确保 `mcp-docs/mcp-config.json` 中对应语言条目存在。
    - 必要时运行 `python mcp-server/scripts/template-processor.py` 生成初始文档骨架。
 5. **测试**
-   - 启动文档服务器：`python start.py --server-type rest --skip-checks`.
+   - 启动文档服务器：`python start.py --mode http --host 0.0.0.0 --port 7778 --skip-checks`。
    - 打开 `http://localhost:7778/projects` 验证新项目是否出现。
 
 ---
