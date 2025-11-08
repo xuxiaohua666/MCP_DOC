@@ -12,19 +12,37 @@ pip install mcp
 
 ### 2. 启动服务器
 
-#### 🚀 一键启动（MCP 协议，推荐）
+#### 🌐 共享给其他客户端（HTTP 网关，默认）
 ```bash
-# Windows / Linux / macOS 脚本均默认调用 MCP 模式
-python start.py
+pip install -r mcp-server/requirements.txt
+python start.py --mode http --host 0.0.0.0 --port 7778
 ```
-启动后按脚本提示在 Cursor、Trae、Claude Desktop 等工具中配置：
+在远程客户端的 `mcp.json` 中配置：
+```json
+{
+  "mcpServers": {
+    "mcp-docs-http": {
+      "url": "http://server-host:7778",
+      "headers": {
+        "Authorization": "Bearer <your-token>"
+      }
+    }
+  }
+}
+```
+`Authorization` 可按需自定义或移除。
+
+#### 🔄 本地客户端（STDIO 模式）
+```bash
+python start.py --mode mcp --skip-checks
+```
+启动后，脚本会提示在 Cursor / Trae / Claude Desktop 中使用的命令：
 ```
 Command : python
-Args    : start.py --skip-checks
+Args    : start.py --mode mcp --skip-checks
 Workdir : /path/to/MCP
 ```
-
-> 如果希望以 REST/HTTP 方式浏览文档，可参考旧版实现或自建适配层；当前仓库默认仅提供 MCP 协议服务。
+客户端会按需启动 MCP 进程，配置完成后脚本窗口可以关闭。
 
 ## 使用工具集
 
@@ -109,7 +127,7 @@ git clone https://github.com/modelcontextprotocol/servers.git
   "mcpServers": {
     "mcp-docs": {
       "command": "python",
-      "args": ["/path/to/mcp_server.py"],
+      "args": ["/path/to/start.py", "--mode", "mcp", "--skip-checks"],
       "env": {
         "MCP_ROOT": "/path/to/your/docs"
       }
@@ -127,15 +145,12 @@ MCP/
 │   ├── GETTING_STARTED.md
 │   ├── server-guide.md
 │   └── standards/          # 开发规范
-├── mcp-server/             # MCP 实现与工具
+├── mcp-server/             # 服务器实现
+│   ├── http_server.py          # HTTP 网关（默认）
+│   ├── mcp_protocol_server.py # MCP协议服务器
 │   ├── mcp-config.json     # 配置文件
 │   ├── requirements.txt    # Python依赖
-│   ├── mcp_protocol_server.py # MCP协议服务器
 │   └── scripts/            # 工具脚本
-│       ├── mcp-auto-update.py
-│       ├── template-processor.py
-│       ├── quality-checker.py
-│       └── performance-monitor.py
 └── mcp-docs/               # 文档和示例
     ├── templates/          # 文档模板
     ├── Java/               # Java项目目录
@@ -157,12 +172,12 @@ A: 整个MCP目录就是您的数据，可以直接备份整个目录。
 
 ### Q: 服务器启动失败怎么办？
 A: 检查：
-1. 是否已安装 `mcp` 依赖（可以运行 `pip install mcp`）
-2. `mcp-docs/mcp-config.json` 是否存在且格式正确
-3. 当前目录是否切换到项目根目录（含 `mcp-server/` 和 `mcp-docs/`）
+1. 是否已安装 `mcp` 依赖（HTTP 模式还需 fastapi、uvicorn）
+2. `mcp-server/mcp-config.json` 与 `mcp-docs/mcp-config.json` 是否存在且格式正确
+3. 运行目录是否位于项目根目录
 
 ### Q: 如何与AI工具集成？
-A: 使用标准 MCP 协议连接，详见 `docs/integration-guide.md` 中的 Cursor / Trae / Claude Desktop 配置示例。
+A: 使用标准 MCP 协议连接，详见 `docs/integration-guide.md` 中的 Cursor / Trae / HTTP 配置示例。
 
 ## 下一步
 

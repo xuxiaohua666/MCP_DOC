@@ -56,51 +56,15 @@ class MCPDocumentationServer:
         @self.server.list_resources()
         async def handle_list_resources() -> list[types.Resource]:
             """列出所有可用资源"""
-            resources = []
-            
-            # 遍历所有语言和项目
-            for lang_config in self.config.get("supported_languages", []):
-                lang_dir = self.mcp_root / lang_config["display_name"]
-                if not lang_dir.exists():
-                    continue
-                
-                for project_dir in lang_dir.iterdir():
-                    if not project_dir.is_dir():
-                        continue
-                    
-                    project_name = project_dir.name
-                    language = lang_config["name"]
-                    
-                    # 项目资源
-                    resources.append(types.Resource(
-                        uri=f"mcp-docs://project/{language}/{project_name}",
-                        name=f"项目: {project_name} ({language})",
-                        description=f"{language}项目的完整文档和元数据",
-                        mimeType="application/json"
-                    ))
-                    
-                    # 项目README
-                    readme_path = project_dir / "README.md"
-                    if readme_path.exists():
-                        resources.append(types.Resource(
-                            uri=f"mcp-docs://readme/{language}/{project_name}",
-                            name=f"README: {project_name}",
-                            description=f"{project_name}项目的README文档",
-                            mimeType="text/markdown"
-                        ))
-                    
-                    # 模块资源
-                    for module_dir in project_dir.iterdir():
-                        if module_dir.is_dir() and (module_dir / "metadata.json").exists():
-                            module_name = module_dir.name
-                            resources.append(types.Resource(
-                                uri=f"mcp-docs://module/{language}/{project_name}/{module_name}",
-                                name=f"模块: {module_name}",
-                                description=f"{project_name}项目中的{module_name}模块",
-                                mimeType="application/json"
-                            ))
-            
-            return resources
+            return [
+                types.Resource(
+                    uri=item["uri"],
+                    name=item["name"],
+                    description=item["description"],
+                    mimeType=item["mimeType"]
+                )
+                for item in self.collect_resources()
+            ]
         
         @self.server.read_resource()
         async def handle_read_resource(uri: str) -> str:
@@ -135,92 +99,22 @@ class MCPDocumentationServer:
         @self.server.list_tools()
         async def handle_list_tools() -> list[types.Tool]:
             """列出可用工具"""
-            tools = [
+            tools = []
+            for item in self.tool_definitions():
+                tools.append(
                 types.Tool(
-                    name="search_documentation",
-                    description="在文档中搜索特定内容",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "搜索查询字符串"
-                            },
-                            "language": {
-                                "type": "string",
-                                "description": "限制搜索的编程语言（可选）",
-                                "enum": [lang["name"] for lang in self.config.get("supported_languages", [])]
-                            },
-                            "project": {
-                                "type": "string",
-                                "description": "限制搜索的项目（可选）"
-                            }
-                        },
-                        "required": ["query"]
-                    }
-                ),
-                types.Tool(
-                    name="analyze_project_structure",
-                    description="分析项目结构和依赖关系",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "language": {
-                                "type": "string",
-                                "description": "编程语言",
-                                "enum": [lang["name"] for lang in self.config.get("supported_languages", [])]
-                            },
-                            "project": {
-                                "type": "string",
-                                "description": "项目名称"
-                            }
-                        },
-                        "required": ["language", "project"]
-                    }
-                ),
-                types.Tool(
-                    name="check_documentation_quality",
-                    description="检查文档质量和完整性",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "scope": {
-                                "type": "string",
-                                "description": "检查范围",
-                                "enum": ["all", "project", "module"]
-                            },
-                            "language": {
-                                "type": "string",
-                                "description": "编程语言（scope为project或module时必需）"
-                            },
-                            "project": {
-                                "type": "string",
-                                "description": "项目名称（scope为project或module时必需）"
-                            },
-                            "module": {
-                                "type": "string",
-                                "description": "模块名称（scope为module时必需）"
-                            }
-                        },
-                        "required": ["scope"]
-                    }
+                        name=item["name"],
+                        description=item["description"],
+                        inputSchema=item["inputSchema"]
+                    )
                 )
-            ]
-            
             return tools
         
         @self.server.call_tool()
         async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent]:
             """执行工具调用"""
             try:
-                if name == "search_documentation":
-                    result = await self._search_documentation(**arguments)
-                elif name == "analyze_project_structure":
-                    result = await self._analyze_project_structure(**arguments)
-                elif name == "check_documentation_quality":
-                    result = await self._check_documentation_quality(**arguments)
-                else:
-                    raise ValueError(f"未知工具: {name}")
+                result = await self.execute_tool(name, arguments)
                 
                 return [types.TextContent(
                     type="text",
@@ -458,6 +352,131 @@ class MCPDocumentationServer:
                     ),
                 ),
             )
+
+    def collect_resources(self) -> List[Dict[str, Any]]:
+        resources: List[Dict[str, Any]] = []
+        for lang_config in self.config.get("supported_languages", []):
+            lang_dir = self.mcp_root / lang_config["display_name"]
+            if not lang_dir.exists():
+                continue
+
+            for project_dir in lang_dir.iterdir():
+                if not project_dir.is_dir():
+                    continue
+
+                project_name = project_dir.name
+                language = lang_config["name"]
+
+                resources.append({
+                    "uri": f"mcp-docs://project/{language}/{project_name}",
+                    "name": f"项目: {project_name} ({language})",
+                    "description": f"{language}项目的完整文档和元数据",
+                    "mimeType": "application/json"
+                })
+
+                readme_path = project_dir / "README.md"
+                if readme_path.exists():
+                    resources.append({
+                        "uri": f"mcp-docs://readme/{language}/{project_name}",
+                        "name": f"README: {project_name}",
+                        "description": f"{project_name}项目的README文档",
+                        "mimeType": "text/markdown"
+                    })
+
+                for module_dir in project_dir.iterdir():
+                    if module_dir.is_dir() and (module_dir / "metadata.json").exists():
+                        module_name = module_dir.name
+                        resources.append({
+                            "uri": f"mcp-docs://module/{language}/{project_name}/{module_name}",
+                            "name": f"模块: {module_name}",
+                            "description": f"{project_name}项目中的{module_name}模块",
+                            "mimeType": "application/json"
+                        })
+        return resources
+
+    def tool_definitions(self) -> List[Dict[str, Any]]:
+        languages = [lang["name"] for lang in self.config.get("supported_languages", [])]
+        return [
+            {
+                "name": "search_documentation",
+                "description": "在文档中搜索特定内容",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "搜索查询字符串"
+                        },
+                        "language": {
+                            "type": "string",
+                            "description": "限制搜索的编程语言（可选）",
+                            "enum": languages
+                        },
+                        "project": {
+                            "type": "string",
+                            "description": "限制搜索的项目（可选）"
+                        }
+                    },
+                    "required": ["query"]
+                }
+            },
+            {
+                "name": "analyze_project_structure",
+                "description": "分析项目结构和依赖关系",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "language": {
+                            "type": "string",
+                            "description": "编程语言",
+                            "enum": languages
+                        },
+                        "project": {
+                            "type": "string",
+                            "description": "项目名称"
+                        }
+                    },
+                    "required": ["language", "project"]
+                }
+            },
+            {
+                "name": "check_documentation_quality",
+                "description": "检查文档质量和完整性",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "scope": {
+                            "type": "string",
+                            "description": "检查范围",
+                            "enum": ["all", "project", "module"]
+                        },
+                        "language": {
+                            "type": "string",
+                            "description": "编程语言（scope为project或module时必需）"
+                        },
+                        "project": {
+                            "type": "string",
+                            "description": "项目名称（scope为project或module时必需）"
+                        },
+                        "module": {
+                            "type": "string",
+                            "description": "模块名称（scope为module时必需）"
+                        }
+                    },
+                    "required": ["scope"]
+                }
+            }
+        ]
+
+    async def execute_tool(self, name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
+        name = name or ""
+        if name == "search_documentation":
+            return await self._search_documentation(**arguments)
+        if name == "analyze_project_structure":
+            return await self._analyze_project_structure(**arguments)
+        if name == "check_documentation_quality":
+            return await self._check_documentation_quality(**arguments)
+        raise ValueError(f"未知工具: {name}")
 
 
 async def main():
