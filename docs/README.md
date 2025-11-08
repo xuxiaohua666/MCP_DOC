@@ -4,7 +4,7 @@
 
 ### 🚀 快速开始
 - **[快速开始指南](GETTING_STARTED.md)** - 安装、配置和运行指南
-- **[服务器实现指南](server-guide.md)** - REST API vs MCP协议服务器对比
+- **[服务器实现指南](server-guide.md)** - MCP 协议服务器架构与扩展
 
 ### 📋 开发规范
 - **[代码开发规范](standards/coding-standards.md)** - Java、GDScript代码规范
@@ -54,7 +54,6 @@
 
 ### 外部资源
 - [Model Context Protocol 官方文档](https://modelcontextprotocol.io/)
-- [FastAPI 官方文档](https://fastapi.tiangolo.com/)
 - [Godot 官方文档](https://docs.godotengine.org/)
 
 ### 开源项目
