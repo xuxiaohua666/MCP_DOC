@@ -21,7 +21,6 @@ try:
 except ImportError:
     MCP_AVAILABLE = False
     print("官方MCP库未安装。请运行: pip install mcp")
-    print("或者使用文档管理服务器: python server/documentation_server.py")
 
 logger = logging.getLogger(__name__)
 
@@ -477,7 +476,6 @@ async def main():
     if not MCP_AVAILABLE:
         print("错误: 需要安装官方MCP库")
         print("请运行: pip install mcp")
-        print("或者使用REST API服务器: python server/documentation_server.py")
         return 1
     
     # 启动MCP服务器

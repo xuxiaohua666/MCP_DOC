@@ -1,93 +1,56 @@
 # MCP文档服务器启动指南
 
-## 🚀 快速启动
+## 🚀 快速启动（MCP 协议）
 
-### Windows用户
+启动脚本默认运行 **标准 MCP 协议服务器**，适用于 Cursor、Trae、Claude Desktop 等支持 MCP 的工具。
 
-#### 方法1：双击启动（推荐）
+- **Windows（推荐）**：双击 `start.bat`
+- **Windows（PowerShell）**：`.\start.ps1`
+- **Linux / macOS**：`chmod +x start.sh && ./start.sh`
+
+脚本会提示 MCP 客户端的配置方式：
 ```
-双击 start.bat 文件
+Command : python
+Args    : start.py --skip-checks
+Workdir : D:\data\MCP
 ```
-
-#### 方法2：PowerShell启动
-```powershell
-.\start.ps1
-```
-
-#### 方法3：Python启动器
-```cmd
-python start.py
-```
-
-### Linux/Mac用户
-
-#### 方法1：Shell脚本
-```bash
-chmod +x start.sh
-./start.sh
-```
-
-#### 方法2：Python启动器
-```bash
-python3 start.py
-```
+在 Cursor、Trae 等工具中填入相同命令即可连接。
 
 ## 🔧 高级启动选项
 
 ### Python启动器选项
 
 ```bash
-# 启动REST API服务器（默认）
+# 启动MCP协议服务器（脚本已默认）
 python start.py
 
-# 启动MCP协议服务器
-python start.py --server-type mcp
-
-# 自动选择服务器类型
-python start.py --server-type auto
-
-# 自定义主机和端口
-python start.py --host 0.0.0.0 --port 8080
-
-# 详细输出模式
+# 详细输出模式（输出更多日志）
 python start.py --verbose
 
 # 跳过环境检查
 python start.py --skip-checks
 ```
 
-### 直接启动服务器
+### 直接启动协议服务器
 
 ```bash
-# REST API服务器
-python mcp-server/documentation_server.py --mcp-root mcp-docs
-
-# MCP协议服务器
-python mcp-server/mcp_protocol_server.py
-
-# 智能启动器
-python mcp-server/start_server.py
+# 直接运行标准MCP服务器
+python mcp-server/mcp_protocol_server.py --mcp-root mcp-docs
 ```
 
 ## 📋 启动前检查
 
 启动脚本会自动检查：
 
-1. ✅ **Python环境** - 确保Python已安装
-2. ✅ **依赖包** - 自动安装fastapi, uvicorn, pydantic, requests
-3. ✅ **配置文件** - 确保mcp-config.json存在
-4. ✅ **目录结构** - 验证mcp-docs目录结构
+1. ✅ **Python环境** - 确保 Python 已安装
+2. ✅ **依赖包** - 自动安装 `mcp`
+3. ✅ **配置文件** - 确保 `mcp-server/mcp-config.json`、`mcp-docs/mcp-config.json` 存在
+4. ✅ **目录结构** - 验证 `mcp-docs` 目录结构
 
-## 🌐 访问地址
+## 🔗 连接方式
 
-服务器启动后，可以通过以下地址访问：
-
-- **API文档**: http://127.0.0.1:7778/docs
-- **健康检查**: http://127.0.0.1:7778/health
-- **所有项目**: http://127.0.0.1:7778/projects
-- **Java项目**: http://127.0.0.1:7778/projects/java
-- **GDScript项目**: http://127.0.0.1:7778/projects/gdscript
-- **搜索功能**: http://127.0.0.1:7778/search?q=关键词
+- **Cursor / Trae / Claude Desktop**：在其 MCP 配置中填入脚本提示的命令（详见 `docs/integration-guide.md`）。
+- **自定义客户端**：直接以 `python mcp-server/mcp_protocol_server.py --mcp-root mcp-docs` 方式启动，并使用 MCP STDIO 协议通信。
 
 ## 🔍 故障排除
 
@@ -99,7 +62,7 @@ python mcp-server/start_server.py
 ### 问题2：依赖包安装失败
 ```
 解决方案：手动安装
-pip install fastapi uvicorn pydantic requests
+pip install mcp
 ```
 
 ### 问题3：配置文件缺失
@@ -107,13 +70,7 @@ pip install fastapi uvicorn pydantic requests
 解决方案：确保mcp-server/mcp-config.json存在
 ```
 
-### 问题4：端口被占用
-```
-解决方案：使用不同端口
-python start.py --port 8080
-```
-
-### 问题5：权限问题（Linux/Mac）
+### 问题4：权限问题（Linux/Mac）
 ```
 解决方案：设置执行权限
 chmod +x start.sh

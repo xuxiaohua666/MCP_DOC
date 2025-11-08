@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-MCP文档服务器智能启动器
-支持多种启动模式和自动环境检测
+MCP文档服务器启动器
+提供自动环境检测与标准 MCP 协议服务器启动
 """
 
 import argparse
-import os
 import sys
 import subprocess
-import time
 from pathlib import Path
 
 def check_python_environment():
@@ -27,7 +25,7 @@ def check_python_environment():
 def check_dependencies():
     """检查并安装依赖包"""
     print("🔍 检查依赖包...")
-    required_packages = ["fastapi", "uvicorn", "pydantic", "requests"]
+    required_packages = ["mcp"]
     
     try:
         # 尝试导入所有必需的包
@@ -66,29 +64,15 @@ def check_config():
     
     return True
 
-def start_server(server_type="rest", host="127.0.0.1", port=8000, verbose=False):
-    """启动服务器"""
-    print(f"🚀 启动{server_type.upper()}服务器...")
-    print(f"📍 服务器地址: http://{host}:{port}")
-    print(f"📖 API文档: http://{host}:{port}/docs")
-    print(f"🏥 健康检查: http://{host}:{port}/health")
-    print("")
-    print("💡 提示：按 Ctrl+C 停止服务器")
+def start_server(verbose: bool = False) -> bool:
+    """启动MCP协议服务器"""
+    print("🚀 启动MCP协议服务器...")
+    print("🤖 请在支持MCP的工具中使用相同的命令连接")
     print("")
     
-    # 构建启动命令
-    if server_type == "rest":
-        cmd = [sys.executable, "mcp-server/documentation_server.py", 
-               "--mcp-root", "mcp-docs", "--host", host, "--port", str(port)]
-        if verbose:
-            cmd.append("--verbose")
-    elif server_type == "mcp":
-        cmd = [sys.executable, "mcp-server/mcp_protocol_server.py"]
-    else:
-        cmd = [sys.executable, "mcp-server/start_server.py"]
-        if server_type != "auto":
-            cmd.extend(["--server-type", server_type])
-        cmd.extend(["--host", host, "--port", str(port)])
+    cmd = [sys.executable, "mcp-server/mcp_protocol_server.py", "--mcp-root", "mcp-docs"]
+    if verbose:
+        cmd.append("--verbose")
     
     try:
         subprocess.run(cmd, check=True)
@@ -102,17 +86,6 @@ def start_server(server_type="rest", host="127.0.0.1", port=8000, verbose=False)
 
 def main():
     parser = argparse.ArgumentParser(description="MCP文档服务器启动器")
-    parser.add_argument("--server-type", 
-                       choices=["rest", "mcp", "auto"], 
-                       default="rest",
-                       help="服务器类型 (默认: rest)")
-    parser.add_argument("--host", 
-                       default="127.0.0.1",
-                       help="服务器主机地址 (默认: 127.0.0.1)")
-    parser.add_argument("--port", 
-                       type=int, 
-                       default=7778,
-                       help="服务器端口 (默认: 7778)")
     parser.add_argument("--verbose", "-v", 
                        action="store_true",
                        help="详细输出")
@@ -142,7 +115,7 @@ def main():
         print("")
     
     # 启动服务器
-    success = start_server(args.server_type, args.host, args.port, args.verbose)
+    success = start_server(args.verbose)
     sys.exit(0 if success else 1)
 
 if __name__ == "__main__":

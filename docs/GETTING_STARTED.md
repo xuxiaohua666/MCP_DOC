@@ -1,54 +1,30 @@
 # MCP文档服务器 - 快速开始指南
 
 ## 概述
-MCP文档服务器是一个专为AI辅助开发设计的文档管理系统，提供REST API和Web界面来管理项目文档。
+MCP文档服务器是一个专为AI辅助开发设计的知识库系统，通过 **Model Context Protocol (MCP)** 向 IDE 与智能体暴露项目文档、元数据和辅助工具。
 
 ## 安装和运行
 
 ### 1. 安装依赖
 ```bash
-# 安装Python依赖
-pip install -r requirements.txt
-
-# 或者手动安装核心依赖
-pip install fastapi uvicorn pydantic requests
+pip install mcp
 ```
 
 ### 2. 启动服务器
 
-#### 🚀 一键启动（推荐）
+#### 🚀 一键启动（MCP 协议，推荐）
 ```bash
-# 自动检测并启动合适的服务器
-python start_server.py
+# Windows / Linux / macOS 脚本均默认调用 MCP 模式
+python start.py
+```
+启动后按脚本提示在 Cursor、Trae、Claude Desktop 等工具中配置：
+```
+Command : python
+Args    : start.py --skip-checks
+Workdir : /path/to/MCP
 ```
 
-#### 指定服务器类型
-```bash
-# 启动REST API服务器（Web界面）
-python start_server.py --server-type rest
-
-# 启动MCP协议服务器（Claude Desktop集成）
-python start_server.py --server-type mcp
-
-# 自定义配置
-python start_server.py --host 0.0.0.0 --port 8080 --verbose
-```
-
-#### 直接启动特定服务器
-```bash
-# REST API服务器
-python mcp-server/documentation_server.py
-
-# MCP协议服务器（需要安装mcp库）
-python mcp-server/mcp_protocol_server.py
-```
-
-### 3. 访问服务器
-服务器启动后，可以通过以下方式访问：
-
-- **API文档**: http://127.0.0.1:8000/docs （Swagger UI）
-- **健康检查**: http://127.0.0.1:8000/health
-- **所有项目**: http://127.0.0.1:8000/projects
+> 如果希望以 REST/HTTP 方式浏览文档，可参考旧版实现或自建适配层；当前仓库默认仅提供 MCP 协议服务。
 
 ## 使用工具集
 
@@ -109,23 +85,6 @@ python mcp-server/scripts/install-git-hooks.py --action status
 python mcp-server/scripts/install-git-hooks.py --action uninstall
 ```
 
-## API使用示例
-
-### 获取所有项目
-```bash
-curl http://127.0.0.1:8000/projects
-```
-
-### 搜索文档
-```bash
-curl "http://127.0.0.1:8000/search?q=用户管理&language=java"
-```
-
-### 获取项目详情
-```bash
-curl http://127.0.0.1:8000/projects/java/example-web-service
-```
-
 ## 开源MCP服务器选项
 
 如果您想使用标准的MCP协议，以下是一些开源选项：
@@ -160,7 +119,7 @@ git clone https://github.com/modelcontextprotocol/servers.git
 ```
 
 ## 目录结构
-确保您的MCP目录结构如下：
+确保您的 MCP 目录结构如下：
 ```
 MCP/
 ├── docs/                   # 文档中心
@@ -168,11 +127,9 @@ MCP/
 │   ├── GETTING_STARTED.md
 │   ├── server-guide.md
 │   └── standards/          # 开发规范
-├── mcp-server/             # 服务器实现
-│   ├── start_server.py     # 智能启动器
+├── mcp-server/             # MCP 实现与工具
 │   ├── mcp-config.json     # 配置文件
 │   ├── requirements.txt    # Python依赖
-│   ├── documentation_server.py # REST API服务器
 │   ├── mcp_protocol_server.py # MCP协议服务器
 │   └── scripts/            # 工具脚本
 │       ├── mcp-auto-update.py
@@ -200,12 +157,12 @@ A: 整个MCP目录就是您的数据，可以直接备份整个目录。
 
 ### Q: 服务器启动失败怎么办？
 A: 检查：
-1. Python依赖是否安装完整
-2. 端口8000是否被占用
-3. mcp-server/mcp-config.json文件是否存在且格式正确
+1. 是否已安装 `mcp` 依赖（可以运行 `pip install mcp`）
+2. `mcp-docs/mcp-config.json` 是否存在且格式正确
+3. 当前目录是否切换到项目根目录（含 `mcp-server/` 和 `mcp-docs/`）
 
 ### Q: 如何与AI工具集成？
-A: 通过REST API访问文档数据，或使用标准MCP协议与支持MCP的AI工具（如Claude Desktop）集成。
+A: 使用标准 MCP 协议连接，详见 `docs/integration-guide.md` 中的 Cursor / Trae / Claude Desktop 配置示例。
 
 ## 下一步
 

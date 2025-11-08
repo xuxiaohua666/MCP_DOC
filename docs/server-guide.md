@@ -1,157 +1,80 @@
-# MCP文档服务器实现说明
+# MCP 文档服务器实现说明
 
-## 📁 服务器目录结构
+本项目现仅提供 **Model Context Protocol (MCP)** 协议实现，所有脚本与文档均围绕 `mcp-server/mcp_protocol_server.py` 这一实现展开。下文将介绍代码结构、协议能力以及如何扩展。
+
+## 📁 目录概览
 
 ```
 mcp-server/
-├── start_server.py              # 智能启动器
-├── mcp-config.json             # 配置文件
-├── requirements.txt            # Python依赖
-├── documentation_server.py      # REST API服务器（自实现）
-└── mcp_protocol_server.py      # MCP协议服务器（使用官方库）
+├── mcp-config.json          # 语言与项目映射配置
+├── mcp_protocol_server.py   # MCP 协议服务器主实现
+├── requirements.txt         # 依赖（仅需 mcp）
+└── scripts/                 # 质量检查、模板处理等辅助脚本
 ```
 
-## 🔧 两种服务器实现
+## ⚙️ 协议实现要点
 
-### 1. REST API服务器 (`documentation_server.py`)
+`mcp_protocol_server.py` 基于官方 `mcp` Python 库实现，核心要素如下：
 
-**特点：**
-- ✅ **无需额外依赖**：只需 FastAPI + Uvicorn
-- ✅ **Web界面友好**：提供Swagger UI文档界面
-- ✅ **易于调试**：可直接通过浏览器访问
-- ✅ **通用性强**：任何HTTP客户端都可以使用
+- **Server 对象**：`Server("mcp-documentation-server")` 负责注册所有资源与工具。
+- **配置加载**：`mcp-docs/mcp-config.json` 描述可用语言、展示名称、默认模板等，启动时会读取到内存。
+- **资源注册**（`list_resources`）：
+  - 为每个项目生成 `mcp-docs://project/{language}/{project}` 资源。
+  - 自动挂载 README、模块 `metadata.json`、模块文档等子资源。
+- **资源读取**（`read_resource`）：
+  - 根据 URI 读取 JSON 或 Markdown 内容，供客户端直接展示或进一步处理。
+- **工具注册**（`list_tools`）：
+  - `search_documentation`：全文检索 Markdown/JSON。
+  - `analyze_project_structure`、`list_modules`：构建结构化视图。
+  - `check_documentation_quality`、`summarize_project`、`compare_projects` 等高级分析工具。
+- **运行模式**：通过 `mcp.server.stdio.stdio_server()` 与客户端建立 STDIO 通道，兼容 Cursor、Trae、Claude Desktop 等 MCP 客户端。
 
-**适用场景：**
-- Web应用集成
-- API调试和测试
-- 通用的文档查询服务
-- 不支持MCP协议的AI工具
+## 🚀 启动方式
 
-**启动方式：**
 ```bash
-python mcp-server/documentation_server.py
-# 访问: http://127.0.0.1:8000/docs
-```
-
-### 2. MCP协议服务器 (`mcp_protocol_server.py`)
-
-**特点：**
-- ✅ **标准协议**：使用官方Model Context Protocol
-- ✅ **AI工具集成**：直接支持Claude Desktop等MCP客户端
-- ✅ **高效通信**：基于JSON-RPC的结构化通信
-- ❗ **需要依赖**：需要安装 `pip install mcp`
-
-**适用场景：**
-- Claude Desktop集成
-- 支持MCP的AI开发工具
-- 标准化的AI上下文提供
-
-**启动方式：**
-```bash
-# 需要先安装MCP库
 pip install mcp
-python mcp-server/mcp_protocol_server.py
+python start.py --server-type mcp            # 或直接执行 start.bat / start.ps1 / start.sh
 ```
 
-## 🚀 推荐使用方式
+启动脚本会输出推荐的客户端配置命令（Command / Args / Workdir），直接复制到 Cursor、Trae 等工具即可。
 
-### 方案一：一键启动（推荐）
-```bash
-python mcp-server/start_server.py
-```
-- 自动检测可用库
-- 自动选择最佳服务器
-- 简单易用
+## 🔌 客户端集成提示
 
-### 方案二：根据需求选择
+在支持 MCP 的工具中填入脚本输出的命令即可。例如 Cursor：
 
-**如果您需要：**
-- **Web界面调试** → 使用 REST API服务器
-- **Claude Desktop集成** → 使用 MCP协议服务器
-- **通用API访问** → 使用 REST API服务器
-- **标准MCP支持** → 使用 MCP协议服务器
-
-## 🔄 协议对比
-
-| 特性 | REST API | MCP协议 |
-|------|----------|---------|
-| Web界面 | ✅ Swagger UI | ❌ |
-| Claude Desktop | ❌ | ✅ |
-| HTTP访问 | ✅ | ❌ |
-| 标准化 | 自定义API | ✅ 官方协议 |
-| 依赖要求 | 最小 | 需要mcp库 |
-| 调试便利 | ✅ 浏览器 | 命令行 |
-
-## 📖 API功能对比
-
-两种服务器都提供相同的核心功能：
-
-- **项目管理**：列出、查询项目信息
-- **模块管理**：访问模块文档和元数据
-- **文档搜索**：全文搜索文档内容
-- **质量检查**：文档质量分析
-- **结构分析**：项目结构和依赖分析
-
-**区别在于接口格式：**
-- REST API：标准HTTP + JSON
-- MCP协议：JSON-RPC + 结构化消息
-
-## 🛠️ 开发和扩展
-
-### 添加新功能
-1. 在两个服务器文件中都添加相应功能
-2. 保持API一致性
-3. 更新文档
-
-### 自定义配置
-两个服务器都读取相同的 `mcp-server/mcp-config.json` 配置文件。
-
-### 错误处理
-- REST API：HTTP状态码 + JSON错误信息
-- MCP协议：结构化错误响应
-
-## 🔗 集成示例
-
-### REST API集成
-```python
-import requests
-
-# 获取所有项目
-response = requests.get("http://127.0.0.1:8000/projects")
-projects = response.json()
-
-# 搜索文档
-response = requests.get("http://127.0.0.1:8000/search?q=用户管理")
-results = response.json()
-```
-
-### Claude Desktop集成
-在Claude Desktop配置文件中添加：
 ```json
 {
   "mcpServers": {
-    "documentation": {
+    "mcp-docs": {
       "command": "python",
-      "args": ["D:\\data\\MCP\\mcp-server\\mcp_protocol_server.py"],
+      "args": ["start.py", "--skip-checks"],
+      "cwd": "D:/data/MCP",
       "env": {
-        "MCP_ROOT": "D:\\data\\MCP"
+        "MCP_ROOT": "mcp-docs"
       }
     }
   }
 }
 ```
 
-## 📝 注意事项
+## 🧩 配置与扩展
 
-1. **端口占用**：REST服务器默认使用8000端口
-2. **权限**：确保对MCP目录有读取权限
-3. **编码**：所有文档使用UTF-8编码
-4. **性能**：大型项目建议启用缓存
-5. **配置路径**：确保配置文件路径正确指向 `mcp-server/mcp-config.json`
+- **新增语言**：编辑 `mcp-docs/mcp-config.json`，并在对应目录下创建项目结构（可使用 `docs/project-setup-guide.md` 中的模板流程）。
+- **新增工具**：在 `mcp_protocol_server.py` 的 `_register_handlers` 中注册新的 `@self.server.list_tools()` 条目，实现自定义分析逻辑。
+- **Wiki 文档**：`docs/wiki/index.json` 列出的 Markdown 会作为资源暴露，方便客户端快速查询集成指南、模板说明等。
 
-## 🤝 贡献
+## 🛠️ 辅助脚本
 
-欢迎提交问题和改进建议！两种服务器实现都欢迎扩展和优化。
+`mcp-server/scripts/` 目录提供质量检查、模板生成、性能监控等自动化工具，可配合 MCP 服务使用，保持文档一致性与可读性。
+
+## ❗ 常见问题
+
+| 问题 | 解决方案 |
+| ---- | -------- |
+| 启动时报错 `mcp` 未找到 | 运行 `pip install mcp` |
+| 客户端无法连接 | 确认命令行、工作目录、`MCP_ROOT` 配置正确，且脚本窗口保持打开 |
+| 新增语言后未出现在列表 | 检查 `mcp-config.json` 是否正确配置并重启服务器 |
 
 ---
-*选择最适合您需求的服务器实现*
+
+如需构建 Web / REST 层，可在此 MCP 服务之上自行扩展。当前仓库聚焦于提供稳定、结构化的 MCP 协议能力。欢迎按照项目需求扩展工具或提交改进建议。
