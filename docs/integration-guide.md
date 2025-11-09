@@ -125,6 +125,35 @@
 
 ---
 
+## 使用 `process_request` 统一生成文档
+
+`process_request` 是 MCP 服务器提供的对话式工具，会根据你的意图、语言/项目定位返回：
+- 需要遵循的规则文档（含相对路径与摘要）
+- 建议执行的步骤（最多 3 条）
+- 推荐继续调用的 MCP 工具示例
+
+### 在 Cursor 中调用
+
+1. 连接到配置好的服务器（HTTP 模式为 `mcp-docs-http`，STDIO 模式为 `mcp-docs`）。
+2. 在聊天窗口输入：
+   ```
+   call tool process_request on mcp-docs-http with {"intent":"为 Node 项目补充 README","language":"node","project":"demo-project"}
+   ```
+3. 按返回的 `rules`、`steps` 提示修改 `mcp-docs/` 下的文档；如需查看规则，可直接 `read resource` 打开返回的 URI。
+
+### 在 Trae 中调用
+
+1. 打开 MCP 会话，选中对应服务器。
+2. 执行：
+   ```
+   call tool process_request on mcp-docs-http with {"intent":"初始化 Java 服务文档","language":"java","project":"order-service"}
+   ```
+3. Trae 会展示 JSON 建议，可复制 URI 或继续调用推荐工具。
+
+> `process_request` 仅提供编写建议，不会直接修改文档或运行脚本。如需自动生成内容，可在返回建议后手动调用仓库中的模板/脚本，或扩展 `mcp_protocol_server.py` 中 `_process_request` 的逻辑。
+
+---
+
 ## 快速定位到指定项目
 
 - **项目元数据**：`mcp-docs://project/<language>/<project>`
