@@ -8,7 +8,7 @@
 
 1. **安装依赖**
    ```bash
-   pip install -r mcp-server/requirements.txt   # 包含 mcp / fastapi / uvicorn
+   python -m pip install mcp fastapi uvicorn pydantic requests markdown
    ```
 2. **启动 HTTP 网关（默认）**
    ```bash
@@ -122,6 +122,20 @@
 | STDIO 模式启动失败 | 确认命令、工作目录、`MCP_ROOT` 环境参数 |
 | 终端输出乱码 | 设置 `PYTHONUTF8=1`（Windows）或 `export PYTHONUTF8=1`（Linux/macOS） |
 | 工具列表为空 | 确认 `mcp-docs/mcp-config.json` 描述的语言、项目目录完整 |
+
+---
+
+## 快速定位到指定项目
+
+- **项目元数据**：`mcp-docs://project/<language>/<project>`
+- **项目 README**：`mcp-docs://readme/<language>/<project>`
+- **模块文档**：`mcp-docs://module/<language>/<project>/<module>`
+
+在 Cursor / Trae 中连接服务器后，可以：
+- 直接在聊天输入 `read resource from mcp-docs-http using uri mcp-docs://project/node/node-demo`（替换为实际语言与项目）；
+- 或在资源面板搜索项目名称并双击打开。
+
+常用项目建议记录在笔记或客户端模板中，方便随时粘贴调用。
 
 ---
 

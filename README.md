@@ -16,7 +16,7 @@
 ### 共享部署（HTTP 网关，默认）
 
 ```bash
-pip install -r mcp-server/requirements.txt
+python -m pip install mcp fastapi uvicorn pydantic requests markdown
 python start.py --mode http --host 0.0.0.0 --port 7778
 ```
 
@@ -48,7 +48,7 @@ python start.py --mode http --host 0.0.0.0 --port 7778
 ### 本地客户端（STDIO 模式）
 
 ```bash
-pip install mcp
+python -m pip install mcp
 python start.py --mode mcp --skip-checks
 ```
 
@@ -93,7 +93,7 @@ MCP/
 
 ## 🤝 贡献与扩展
 
-- **新增语言/项目**：更新 `mcp-docs/mcp-config.json`，按 `docs/project-setup-guide.md` 生成目录与模板。
+- **新增语言/项目**：运行 `python scripts/setup_mcp_project.py`，按提示回答即可自动登记语言并生成 `mcp-docs/<Language>/<Project>/` 目录；详见 `docs/project-setup-guide.md`。
 - **新增工具**：在 `http_server.py` / `mcp_protocol_server.py` 中扩展工具注册逻辑，实现自定义分析能力。
 - **共享部署**：可结合反向代理、认证网关，对 HTTP 服务增加访问控制；脚本会输出对应配置示例。
 
