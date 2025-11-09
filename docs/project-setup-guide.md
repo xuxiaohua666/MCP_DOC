@@ -24,6 +24,8 @@ mcp-docs/
 
 ## 通用步骤
 
+> ⚡ 想自动化？运行 `python scripts/setup_mcp_project.py`，按提示填写即可自动完成以下步骤并生成目录、元数据与 README。
+
 1. **确定语言目录**
    - 若已有语言目录（如 `Java/`），直接在其下创建新项目。
    - 若是新增语言（如 PHP），先阅读 `docs/standards/language-extension-guide.md`，然后：

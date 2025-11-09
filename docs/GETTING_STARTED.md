@@ -7,14 +7,13 @@ MCP文档服务器是一个专为AI辅助开发设计的知识库系统，通过
 
 ### 1. 安装依赖
 ```bash
-pip install mcp
+python -m pip install mcp fastapi uvicorn pydantic requests markdown
 ```
 
 ### 2. 启动服务器
 
 #### 🌐 共享给其他客户端（HTTP 网关，默认）
 ```bash
-pip install -r mcp-server/requirements.txt
 python start.py --mode http --host 0.0.0.0 --port 7778
 ```
 在远程客户端的 `mcp.json` 中配置：
@@ -43,6 +42,14 @@ Args    : start.py --mode mcp --skip-checks
 Workdir : /path/to/MCP
 ```
 客户端会按需启动 MCP 进程，配置完成后脚本窗口可以关闭。
+
+### 3. 一问一答初始化新语言/项目
+```bash
+python scripts/setup_mcp_project.py
+```
+- 按提示依次填写语言标识、显示名称、扩展名、项目名称等信息；
+- 脚本会在 `mcp-server/mcp-config.json` 中补登记语言，并在 `mcp-docs/<Language>/<Project>/` 下生成 `project-info.json`、`README.md` 及可选模块骨架；
+- 生成完成后，重新加载 MCP 服务器即可在 Cursor / Trae 中看到新项目。
 
 ## 使用工具集
 
