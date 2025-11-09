@@ -90,6 +90,7 @@ MCP/
 - `docs/server-guide.md`：MCP 协议服务器与 HTTP 网关架构、扩展点。
 - `docs/integration-guide.md`：Cursor / Trae / HTTP 客户端配置示例。
 - `docs/project-setup-guide.md`：基于模板创建新项目（PHP / Java 示例）。
+- `docs/cursor-trae-rules.md`：在 Cursor / Trae 中配置规则与命令的指南。
 
 ## 🤝 贡献与扩展
 
